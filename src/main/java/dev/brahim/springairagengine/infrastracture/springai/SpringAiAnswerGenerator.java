@@ -5,11 +5,14 @@ import dev.brahim.springairagengine.domain.generation.GeneratedAnswer;
 import dev.brahim.springairagengine.domain.query.ProcessedQuery;
 import dev.brahim.springairagengine.domain.retrieval.RetrievedDocument;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+
+@Component
 public class SpringAiAnswerGenerator implements AnswerGenerator {
 
     private static final String SYSTEM_PROMPT = """
