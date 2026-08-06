@@ -1,5 +1,9 @@
 package dev.brahim.springairagengine.api.rag;
 
+import jakarta.validation.constraints.NotBlank;
+
 public record RagQueryRequest(
-    String query
-) {}
+        @NotBlank(message = "Query must not be blank")
+        String query
+) {
+}
