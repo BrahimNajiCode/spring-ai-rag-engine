@@ -1,6 +1,5 @@
 package dev.brahim.springairagengine.application.rag;
 
-import dev.brahim.springairagengine.domain.document.DocumentReference;
 import dev.brahim.springairagengine.domain.retrieval.RetrievedDocument;
 
 import java.util.List;
