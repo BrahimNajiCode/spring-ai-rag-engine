@@ -1,4 +1,4 @@
-package dev.brahim.springairagengine.rag;
+package dev.brahim.springairagengine.application.rag.naive;
 
 
 import dev.brahim.springairagengine.application.rag.RagRequest;
