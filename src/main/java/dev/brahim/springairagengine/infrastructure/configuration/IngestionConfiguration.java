@@ -1,4 +1,4 @@
-package dev.brahim.springairagengine.infrastracture.configuration;
+package dev.brahim.springairagengine.infrastructure.configuration;
 
 
 import dev.brahim.springairagengine.application.ingestion.*;

@@ -3,7 +3,6 @@ package dev.brahim.springairagengine.infrastructure.vectorstore;
 
 import dev.brahim.springairagengine.domain.query.ProcessedQuery;
 import dev.brahim.springairagengine.domain.retrieval.RetrievedDocument;
-import dev.brahim.springairagengine.infrastracture.vectorstore.VectorStoreDocumentRetriever;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

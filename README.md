@@ -90,7 +90,7 @@ flowchart TD
 
 ### Repository structure
 
-The actual package base is `dev.brahim.springairagengine`. Note that the infrastructure package is spelled `infrastracture` in the source tree, and the naive engine currently lives in a top-level `rag` package:
+The actual package base is `dev.brahim.springairagengine`. Note that the infrastructure package is spelled `infrastructure` in the source tree, and the naive engine currently lives in a top-level `rag` package:
 
 ```
 src/main/java/dev/brahim/springairagengine/
@@ -136,7 +136,7 @@ src/main/java/dev/brahim/springairagengine/
 │   └── document/
 │       └── DocumentReference
 │
-├── infrastracture/            (sic — spelling in source tree)
+├── infrastructure/
 │   ├── springai/
 │   │   ├── SpringAiAnswerGenerator
 │   │   ├── SpringAiDocumentReader
@@ -222,7 +222,7 @@ flowchart LR
 
 The repository is at the **architectural scaffold** stage. What exists:
 
-- Layered packages (api / application / domain / infrastracture) with clear responsibilities.
+- Layered packages (api / application / domain / infrastructure) with clear responsibilities.
 - Core contracts: `RagEngine`, `DocumentIngestionService`, `DocumentReader`, `DocumentSplitter`, `DocumentWriter`, `DocumentRetriever`, `QueryProcessor`, `AnswerGenerator`.
 - Spring AI and vector-store adapters that implement those contracts (`SpringAiAnswerGenerator`, `SpringAiDocumentReader`, `SpringAiDocumentSplitter`, `VectorStoreDocumentRetriever`, `VectorStoreDocumentWriter`).
 - Strategy configuration (`RagProperties`, `RagStrategy`).

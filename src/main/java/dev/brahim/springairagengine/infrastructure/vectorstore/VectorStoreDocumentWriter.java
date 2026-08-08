@@ -1,4 +1,4 @@
-package dev.brahim.springairagengine.infrastracture.vectorstore;
+package dev.brahim.springairagengine.infrastructure.vectorstore;
 
 import dev.brahim.springairagengine.application.ingestion.DocumentWriter;
 import org.springframework.ai.document.Document;

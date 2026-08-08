@@ -1,4 +1,4 @@
-package dev.brahim.springairagengine.infrastracture.springai;
+package dev.brahim.springairagengine.infrastructure.springai;
 
 import dev.brahim.springairagengine.domain.generation.AnswerGenerator;
 import dev.brahim.springairagengine.domain.generation.GeneratedAnswer;

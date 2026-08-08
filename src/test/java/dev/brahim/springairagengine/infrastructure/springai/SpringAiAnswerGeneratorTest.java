@@ -3,7 +3,6 @@ package dev.brahim.springairagengine.infrastructure.springai;
 import dev.brahim.springairagengine.domain.generation.GeneratedAnswer;
 import dev.brahim.springairagengine.domain.query.ProcessedQuery;
 import dev.brahim.springairagengine.domain.retrieval.RetrievedDocument;
-import dev.brahim.springairagengine.infrastracture.springai.SpringAiAnswerGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

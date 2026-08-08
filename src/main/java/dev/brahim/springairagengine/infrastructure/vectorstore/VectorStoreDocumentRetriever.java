@@ -1,4 +1,4 @@
-package dev.brahim.springairagengine.infrastracture.vectorstore;
+package dev.brahim.springairagengine.infrastructure.vectorstore;
 
 import dev.brahim.springairagengine.application.retrieval.DocumentRetriever;
 import dev.brahim.springairagengine.domain.query.ProcessedQuery;
