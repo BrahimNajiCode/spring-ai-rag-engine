@@ -6,19 +6,20 @@ import dev.brahim.springairagengine.domain.retrieval.RetrievedDocument;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Objects;
 
-
-@Component
 public class VectorStoreDocumentRetriever implements DocumentRetriever {
     private final VectorStore vectorStore;
     private final int topK;
     private final double similarityThreshold;
 
-    public VectorStoreDocumentRetriever(VectorStore vectorStore, int topK, double similarityThreshold) {
+    public VectorStoreDocumentRetriever(
+            VectorStore vectorStore,
+            int topK,
+            double similarityThreshold
+    ) {
         this.vectorStore = Objects.requireNonNull(vectorStore);
 
         if (topK <= 0) {

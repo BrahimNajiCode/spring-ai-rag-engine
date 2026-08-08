@@ -5,6 +5,8 @@ spring:
       max-request-size: 50MB
   application:
     name: spring-ai-rag-engine
+  config:
+    import: "optional:file:.env[.properties]"
 
   datasource:
     url: ${POSTGRES_URL:jdbc:postgresql://localhost:5432/rag}
@@ -21,7 +23,7 @@ spring:
         embedding:
           api-key: ${GEMINI_API_KEY}
           text:
-            model: ${GEMINI_EMBEDDING_MODEL:text-embedding-001}
+            model: ${GEMINI_EMBEDDING_MODEL:gemini-embedding-001}
             dimensions: 768
 
     vectorstore:
@@ -34,4 +36,4 @@ spring:
 rag:
   retrieval:
     top-k: 5
-    similarity-threshold: 0.7
+    similarity-threshold: 0.0

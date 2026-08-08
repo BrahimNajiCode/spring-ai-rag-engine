@@ -17,9 +17,9 @@ public class SpringAiDocumentSplitter implements DocumentSplitter {
     private final TextSplitter textSplitter;
     public SpringAiDocumentSplitter() {
         this.textSplitter = TokenTextSplitter.builder()
-                .withChunkSize(800)
-                .withMinChunkSizeChars(350)
-                .withMinChunkLengthToEmbed(50)
+                .withChunkSize(600)
+                .withMinChunkSizeChars(300)
+                .withMinChunkLengthToEmbed(100)
                 .withMaxNumChunks(10_000)
                 .withKeepSeparator(true)
                 .build();

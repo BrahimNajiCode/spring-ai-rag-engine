@@ -18,12 +18,6 @@ public record RetrievedDocument(
             );
         }
 
-        if (score < 0.0 || score > 1.0) {
-            throw new IllegalArgumentException(
-                    "Score must be between 0.0 and 1.0"
-            );
-        }
-
         metadata = Map.copyOf(metadata);
     }
 
