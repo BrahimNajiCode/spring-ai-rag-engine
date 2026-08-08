@@ -1,0 +1,24 @@
+spring:
+  ai:
+    google:
+      genai:
+        api-key: test
+        project-id: test
+
+        embedding:
+          text:
+            model: gemini-embedding-001
+            dimensions: 768
+
+    vectorstore:
+      pgvector:
+        initialize-schema: true
+        dimensions: 768
+        index-type: HNSW
+        distance-type: COSINE_DISTANCE
+
+rag:
+  strategy: NAIVE
+  retrieval:
+    top-k: 5
+    similarity-threshold: 0.0

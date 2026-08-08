@@ -1,9 +1,14 @@
 package dev.brahim.springairagengine.infrastructure.configuration;
 
-public class RagProperties {
-    private final RagStrategy strategy;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-    public RagProperties(RagStrategy strategy) {
-        this.strategy = strategy;
+@ConfigurationProperties(prefix = "rag")
+public record RagProperties(
+    RagStrategy strategy
+) {
+    public RagProperties {
+        if (strategy == null) {
+            strategy = RagStrategy.NAIVE;
+        }
     }
 }
