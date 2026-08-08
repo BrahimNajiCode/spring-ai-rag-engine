@@ -43,7 +43,7 @@ The project is built for two purposes:
 1. **To understand RAG fundamentals** — ingestion, retrieval, embeddings, and vector search, and how Spring AI integrates them.
 2. **To design an extensible architecture** — the Naive flow is built behind abstractions (interfaces in the `application` and `domain` layers) so that more advanced RAG strategies can be added later **without changing the external API or the application flow**.
 
-> **Scope note:** the **Naive RAG** flow is fully implemented end-to-end, from document upload to a grounded LLM answer with sources. **Advanced, Modular, and Production RAG** are **future** targets and are not implemented. The `RagStrategy` enum and the placeholder `AdvancedRagEngine` class exist only as scaffolding for that roadmap.
+> **Scope note:** the **Naive RAG** flow is fully implemented end-to-end, from document upload to a grounded LLM answer with sources. **Advanced RAG** has its orchestration boundary and engine in place (selectable via `rag.strategy: ADVANCED`), but its advanced retrieval techniques are **not implemented yet** — it currently mirrors the naive pipeline. **Modular and Production RAG** remain future targets. The `RagStrategy` enum is the seam for this roadmap.
 
 ## Tech Stack
 
@@ -96,14 +96,14 @@ Spring beans are assembled in `dev.brahim.springairagengine.infrastructure.confi
 |---|---|
 | `ChatClientConfig` | `ChatClient` (built from the auto-configured `ChatClient.Builder`) |
 | `IngestionConfiguration` | `DocumentIngestionService` (`DefaultDocumentIngestionService`) |
-| `RagConfiguration` | `QueryProcessor` (`DefaultQueryProcessor`), `RagEngine` (`NaiveRagEngine`) |
+| `RagConfiguration` | `QueryProcessor` (`DefaultQueryProcessor`), `NaiveRagEngine`, `AdvancedRagEngine`, and the selected `RagEngine` (from `rag.strategy`) |
 | `RetrievalConfiguration` | `DocumentRetriever` (`VectorStoreDocumentRetriever`) bound to `RetrievalProperties` |
 
 The adapters themselves (`SpringAiDocumentReader`, `SpringAiDocumentSplitter`, `SpringAiAnswerGenerator`, `VectorStoreDocumentWriter`) are Spring `@Component`s. `VectorStoreDocumentRetriever` is created via `RetrievalConfiguration` so it can be configured from `rag.retrieval.*` properties.
 
 ## Package Structure
 
-The package base is `dev.brahim.springairagengine`. The Naive RAG engine currently lives in a top-level `rag` package:
+The package base is `dev.brahim.springairagengine`. Each RAG engine variant lives in its own sub-package under `application.rag`:
 
 ```
 src/main/java/dev/brahim/springairagengine/
@@ -120,7 +120,11 @@ src/main/java/dev/brahim/springairagengine/
 │   ├── rag/
 │   │   ├── RagEngine          (interface: answer(RagRequest) → RagResponse)
 │   │   ├── RagRequest
-│   │   └── RagResponse
+│   │   ├── RagResponse
+│   │   ├── naive/
+│   │   │   └── NaiveRagEngine
+│   │   └── advanced/
+│   │       └── AdvancedRagEngine
 │   │
 │   ├── ingestion/
 │   │   ├── DocumentIngestionService
@@ -165,12 +169,8 @@ src/main/java/dev/brahim/springairagengine/
 │       ├── RagConfiguration
 │       ├── RetrievalConfiguration
 │       ├── RetrievalProperties
-│       ├── RagProperties        (scaffold — not registered)
+│       ├── RagProperties        (bound to rag.strategy)
 │       └── RagStrategy           (NAIVE, ADVANCED, MODULAR, PRODUCTION)
-│
-├── rag/
-│   ├── NaiveRagEngine            (current engine: query → retrieval → generation)
-│   └── AdvancedRagEngine         (empty placeholder — not implemented)
 │
 └── SpringAiRagEngineApplication
 ```
@@ -281,6 +281,7 @@ Copy `.env.example` to `.env` (it is git-ignored) and fill in your values. Sprin
 | `spring.ai.vectorstore.pgvector.distance-type` | `COSINE_DISTANCE` | Similarity metric |
 | `rag.retrieval.top-k` | `5` | Number of documents retrieved |
 | `rag.retrieval.similarity-threshold` | `0.0` | Minimum similarity score |
+| `rag.strategy` | `NAIVE` | RAG engine in use: `NAIVE` or `ADVANCED` |
 
 ## Running the Project
 
@@ -382,6 +383,7 @@ Test coverage (19 tests):
 |---|---|
 | `RagControllerTest` | REST contract for `/api/v1/rag/query` (answer + sources JSON, blank/missing query → 400) |
 | `NaiveRagEngineTest` | Orchestration order and source propagation |
+| `AdvancedRagEngineTest` | `RagEngine` contract, orchestration order, null-request rejection |
 | `DefaultDocumentIngestionServiceTest` | read → split → write, short-circuiting on empty read/split |
 | `DefaultQueryProcessorTest` | Normalization, trimming, null/blank rejection |
 | `VectorStoreDocumentRetrieverTest` | Mapping to `RetrievedDocument`, configured search parameters |
@@ -398,15 +400,15 @@ Test coverage (19 tests):
 - REST API: `POST /api/v1/rag/query` and `POST /api/v1/documents` (multipart, 50MB limit).
 - Bean wiring via `ChatClientConfig`, `IngestionConfiguration`, `RagConfiguration`, `RetrievalConfiguration`.
 - Configurable retrieval via `rag.retrieval.*` properties (`RetrievalProperties`).
+- Configurable RAG engine selection via `rag.strategy` (`RagProperties`), with `NaiveRagEngine` and `AdvancedRagEngine` as swappable implementations of the stable `RagEngine` contract.
 - Environment-based configuration (`.env` + `application.yaml`).
 - PostgreSQL/PGVector via `docker-compose.yml`.
-- 19 unit and integration tests.
+- 22 unit and integration tests.
 
 ### Scaffold only (not wired / not implemented)
 
-- `RagStrategy` enum (`NAIVE`, `ADVANCED`, `MODULAR`, `PRODUCTION`) — defined, but strategy selection is not functional; `RagConfiguration` always builds `NaiveRagEngine`.
-- `RagProperties` — defined but not registered as a Spring bean / not bound to configuration properties.
-- `AdvancedRagEngine` — empty placeholder class.
+- Advanced RAG retrieval techniques (query rewriting/expansion, re-ranking, hybrid search) — `AdvancedRagEngine` currently mirrors the naive pipeline.
+- `RagStrategy` values `MODULAR` and `PRODUCTION` — defined but not functional.
 - `DocumentReference` — domain record not referenced by the Naive flow.
 
 ## Future Architecture
@@ -438,7 +440,7 @@ The `RagEngine` contract, the `RagStrategy` enum, and the layered abstractions a
 - [x] Expose the flow through REST APIs (query + upload)
 - [x] Configure PostgreSQL/PGVector via Docker Compose
 - [x] Add unit/integration test coverage
-- [ ] **Future** — Advanced RAG (`RagStrategy.ADVANCED`)
+- [ ] **Future** — Advanced RAG techniques (query rewriting, re-ranking, hybrid search) on top of `AdvancedRagEngine`
 - [ ] **Future** — Modular RAG (`RagStrategy.MODULAR`)
 - [ ] **Future** — Production RAG (`RagStrategy.PRODUCTION`)
 
